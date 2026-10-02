@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 TMPDIR_PATH=""
 SOURCE_DIR=""
@@ -10,9 +10,15 @@ exit_handler() {
     if [ -n "$TMPDIR_PATH" ] && [ -d "$TMPDIR_PATH" ]; then
         rm -rf -- "$TMPDIR_PATH"
     fi
+    echo "Удалено" 
     exit $rc
 }
 trap exit_handler EXIT HUP INT QUIT PIPE TERM
+if [ -z "$1" ]; then
+    echo "ERR: вы не передали файл, перезапустите и передайте первым аргументом полный путь до файла">&2
+    exit 1
+fi
+
 SOURCE_FILE="$1"
  
 OUTPUT_NAME=$(grep -i 'Output:' "$SOURCE_FILE" | head -n 1 | tr -d '\r' | sed  's/.*Output:[[:space:]]*//; s/[[:space:]]*$//')
@@ -41,6 +47,10 @@ case "$EXTENSION" in
     tex)
         COMPILER="pdflatex"
         IS_C=false
+        ;;
+    *) 
+        echo "ERR: неизвестное расширение файла." >&2
+        exit 2
         ;;
 esac
 
