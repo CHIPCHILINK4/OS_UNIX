@@ -1,0 +1,6 @@
+services:
+  worker:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: lab2
