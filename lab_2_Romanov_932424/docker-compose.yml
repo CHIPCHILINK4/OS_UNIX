@@ -4,3 +4,8 @@ services:
       context: .
       dockerfile: dockerfile
     image: lab2
+    volumes:
+      - shared_data:/data
+
+volumes:
+  shared_data:

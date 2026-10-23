@@ -15,8 +15,7 @@ while true; do
     set +e
     
     (
-        flock -n 5 || exit 1
-        
+        flock 5 || exit 1
         i=1
         while true; do
             NAME=$(printf "%03d" "$i")
@@ -32,9 +31,11 @@ while true; do
         done
     ) 5>"$LOCK_FILE" > /tmp/created_file.txt
     
-    set -e 
+    LOCK_STATUS=$?
+    
+    set -e
 
-    if [ $? -ne 0 ]; then
+    if [ $LOCK_STATUS -ne 0 ]; then
         sleep 0.1
         continue
     fi
@@ -44,6 +45,5 @@ while true; do
     sleep 1
     rm -f "$CREATED_FILE"
     sleep 1
-
     COUNTER=$((COUNTER + 1))
 done
